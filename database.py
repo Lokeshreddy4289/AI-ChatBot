@@ -10,7 +10,7 @@ def get_connection():
         host=os.getenv("DB_HOST", "localhost"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME", "ai_chatbot_db")
+        database=os.getenv("DB_NAME", "ai_chatbot_db2")
     )
 
 

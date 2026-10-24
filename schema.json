@@ -1,0 +1,277 @@
+
+{
+  "database": "ai_chatbot_db2",
+  "description": "College Management Database for an AI Chatbot",
+  "tables": {
+    "departments": {
+      "description": "Stores college department information",
+      "columns": {
+        "dept_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "dept_name": "VARCHAR(100) NOT NULL",
+        "hod_name": "VARCHAR(100)",
+        "office_location": "VARCHAR(100)",
+        "phone": "VARCHAR(15)",
+        "email": "VARCHAR(100)"
+      },
+      "primary_key": "dept_id",
+      "relationships": []
+    },
+    "students": {
+      "description": "Stores student details",
+      "columns": {
+        "student_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "first_name": "VARCHAR(50) NOT NULL",
+        "last_name": "VARCHAR(50)",
+        "email": "VARCHAR(100) UNIQUE",
+        "phone": "VARCHAR(15)",
+        "dept_id": "INT"
+      },
+      "primary_key": "student_id",
+      "relationships": [
+        {
+          "column": "dept_id",
+          "references_table": "departments",
+          "references_column": "dept_id"
+        }
+      ]
+    },
+    "faculty": {
+      "description": "Stores faculty details",
+      "columns": {
+        "faculty_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "first_name": "VARCHAR(50) NOT NULL",
+        "last_name": "VARCHAR(50)",
+        "email": "VARCHAR(100) UNIQUE",
+        "phone": "VARCHAR(15)",
+        "dept_id": "INT"
+      },
+      "primary_key": "faculty_id",
+      "relationships": [
+        {
+          "column": "dept_id",
+          "references_table": "departments",
+          "references_column": "dept_id"
+        }
+      ]
+    },
+    "courses": {
+      "description": "Stores course details and assigned faculty",
+      "columns": {
+        "course_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "course_name": "VARCHAR(100) NOT NULL",
+        "credits": "INT",
+        "semester": "INT",
+        "dept_id": "INT",
+        "faculty_id": "INT"
+      },
+      "primary_key": "course_id",
+      "relationships": [
+        {
+          "column": "dept_id",
+          "references_table": "departments",
+          "references_column": "dept_id"
+        },
+        {
+          "column": "faculty_id",
+          "references_table": "faculty",
+          "references_column": "faculty_id"
+        }
+      ]
+    },
+    "enrollments": {
+      "description": "Connects students with enrolled courses",
+      "columns": {
+        "enrollment_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "student_id": "INT NOT NULL",
+        "course_id": "INT NOT NULL",
+        "academic_year": "VARCHAR(20)",
+        "semester": "INT",
+        "enrollment_date": "DATE"
+      },
+      "primary_key": "enrollment_id",
+      "relationships": [
+        {
+          "column": "student_id",
+          "references_table": "students",
+          "references_column": "student_id"
+        },
+        {
+          "column": "course_id",
+          "references_table": "courses",
+          "references_column": "course_id"
+        }
+      ]
+    },
+    "attendance": {
+      "description": "Stores student attendance by course and date",
+      "columns": {
+        "attendance_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "student_id": "INT NOT NULL",
+        "course_id": "INT NOT NULL",
+        "attendance_date": "DATE NOT NULL",
+        "status": "VARCHAR(10) NOT NULL",
+        "remarks": "VARCHAR(255)"
+      },
+      "primary_key": "attendance_id",
+      "relationships": [
+        {
+          "column": "student_id",
+          "references_table": "students",
+          "references_column": "student_id"
+        },
+        {
+          "column": "course_id",
+          "references_table": "courses",
+          "references_column": "course_id"
+        }
+      ]
+    },
+    "exams": {
+      "description": "Stores exam schedules and maximum marks",
+      "columns": {
+        "exam_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "course_id": "INT NOT NULL",
+        "exam_name": "VARCHAR(100) NOT NULL",
+        "exam_date": "DATE",
+        "max_marks": "DECIMAL(6,2)",
+        "semester": "INT"
+      },
+      "primary_key": "exam_id",
+      "relationships": [
+        {
+          "column": "course_id",
+          "references_table": "courses",
+          "references_column": "course_id"
+        }
+      ]
+    },
+    "marks": {
+      "description": "Stores student exam results",
+      "columns": {
+        "mark_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "exam_id": "INT NOT NULL",
+        "student_id": "INT NOT NULL",
+        "marks_obtained": "DECIMAL(6,2)",
+        "grade": "VARCHAR(5)",
+        "remarks": "VARCHAR(255)"
+      },
+      "primary_key": "mark_id",
+      "relationships": [
+        {
+          "column": "exam_id",
+          "references_table": "exams",
+          "references_column": "exam_id"
+        },
+        {
+          "column": "student_id",
+          "references_table": "students",
+          "references_column": "student_id"
+        }
+      ]
+    },
+    "fees": {
+      "description": "Stores student fees and payment status",
+      "columns": {
+        "fee_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "student_id": "INT NOT NULL",
+        "fee_type": "VARCHAR(50) NOT NULL",
+        "amount": "DECIMAL(10,2) NOT NULL",
+        "due_date": "DATE",
+        "payment_status": "VARCHAR(20) DEFAULT 'PENDING'"
+      },
+      "primary_key": "fee_id",
+      "relationships": [
+        {
+          "column": "student_id",
+          "references_table": "students",
+          "references_column": "student_id"
+        }
+      ]
+    },
+    "payments": {
+      "description": "Stores fee payment transactions",
+      "columns": {
+        "payment_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "fee_id": "INT NOT NULL",
+        "payment_date": "DATE",
+        "amount": "DECIMAL(10,2) NOT NULL",
+        "payment_method": "VARCHAR(30)",
+        "transaction_ref": "VARCHAR(100)"
+      },
+      "primary_key": "payment_id",
+      "relationships": [
+        {
+          "column": "fee_id",
+          "references_table": "fees",
+          "references_column": "fee_id"
+        }
+      ]
+    },
+    "faculty_feedback": {
+      "description": "Stores student feedback about faculty and courses",
+      "columns": {
+        "feedback_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "student_id": "INT NOT NULL",
+        "faculty_id": "INT NOT NULL",
+        "course_id": "INT NOT NULL",
+        "rating": "INT",
+        "comments": "TEXT"
+      },
+      "primary_key": "feedback_id",
+      "relationships": [
+        {
+          "column": "student_id",
+          "references_table": "students",
+          "references_column": "student_id"
+        },
+        {
+          "column": "faculty_id",
+          "references_table": "faculty",
+          "references_column": "faculty_id"
+        },
+        {
+          "column": "course_id",
+          "references_table": "courses",
+          "references_column": "course_id"
+        }
+      ]
+    },
+    "classrooms": {
+      "description": "Stores classroom and laboratory details",
+      "columns": {
+        "classroom_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "room_number": "VARCHAR(20) NOT NULL",
+        "building": "VARCHAR(100)",
+        "capacity": "INT",
+        "room_type": "VARCHAR(30)",
+        "location": "VARCHAR(100)"
+      },
+      "primary_key": "classroom_id",
+      "relationships": []
+    },
+    "timetable": {
+      "description": "Stores course schedules and classroom assignments",
+      "columns": {
+        "timetable_id": "INT PRIMARY KEY AUTO_INCREMENT",
+        "course_id": "INT NOT NULL",
+        "classroom_id": "INT NOT NULL",
+        "day_of_week": "VARCHAR(15)",
+        "start_time": "TIME",
+        "end_time": "TIME"
+      },
+      "primary_key": "timetable_id",
+      "relationships": [
+        {
+          "column": "course_id",
+          "references_table": "courses",
+          "references_column": "course_id"
+        },
+        {
+          "column": "classroom_id",
+          "references_table": "classrooms",
+          "references_column": "classroom_id"
+        }
+      ]
+    }
+  }
+}
