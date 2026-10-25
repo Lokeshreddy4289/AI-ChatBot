@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from chatbot import ask_database
-
 app = Flask(__name__)
-
 
 @app.route("/")
 def home():

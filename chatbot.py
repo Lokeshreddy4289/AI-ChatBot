@@ -10,6 +10,7 @@ def ask_database(question):
 
     # Remove one optional trailing semicolon.
     sql = sql.rstrip(";").strip()
+    print(sql)
 
     # Allow only SELECT statements.
     if not re.match(r"^SELECT\b", sql, re.IGNORECASE):
